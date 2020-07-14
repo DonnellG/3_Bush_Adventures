@@ -99,8 +99,8 @@ public class Rocket : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.R))
         {
-            Quaternion zeroRotation = new Quaternion(-35, 0, 0, 0);
-            Vector3 zeroOut = new Vector3(0, 2.5f, 0);
+            Quaternion zeroRotation = new Quaternion(0, 0, 0, 0);
+            Vector3 zeroOut = new Vector3(-35, 2.5f, 0);
             print("You reset the position");
             transform.SetPositionAndRotation(zeroOut, zeroRotation);
             ridgeBody.velocity = Vector3.zero;
