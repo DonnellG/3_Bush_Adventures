@@ -9,7 +9,9 @@ public class Rocket : MonoBehaviour
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip death;
     [SerializeField] AudioClip levelStart;
-
+    [SerializeField] ParticleSystem mainEngineParticles;
+    [SerializeField] ParticleSystem successParticles;
+    [SerializeField] ParticleSystem deathParticles;
 
     AudioSource audioComponent;
     Rigidbody ridgeBody;
@@ -69,16 +71,18 @@ public class Rocket : MonoBehaviour
     {
         state = State.Dying;
         audioComponent.Stop();
-        Invoke("LoadFirstScene", 1f);
+        deathParticles.Play();
         audioComponent.PlayOneShot(death);
+        Invoke("LoadFirstScene", 1f);
     }
 
     private void StartSuccessSequence()
     {
         state = State.Transcending;
-        Invoke("LoadNextScene", 1f); //parameterise time
         audioComponent.Stop();
         audioComponent.PlayOneShot(levelStart);
+        successParticles.Play();
+        Invoke("LoadNextScene", 1f); //parameterise time
     }
 
     private void LoadFirstScene()
@@ -106,6 +110,7 @@ public class Rocket : MonoBehaviour
         else
         {
             audioComponent.Stop();
+            mainEngineParticles.Stop();
         }
 
     }
@@ -117,6 +122,7 @@ public class Rocket : MonoBehaviour
         {
             audioComponent.PlayOneShot(mainEngine);
         }
+        mainEngineParticles.Play();
     }
 
     private void RespondToRotateInput()
