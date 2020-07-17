@@ -4,11 +4,14 @@ using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour
 {
-    [SerializeField]float rcsThrust = 500f;
+    [SerializeField] float rcsThrust = 500f;
     [SerializeField] float thrusterBoost = 300f;
+    [SerializeField] float levelLoadDelay = 2f;
+
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip death;
     [SerializeField] AudioClip levelStart;
+
     [SerializeField] ParticleSystem mainEngineParticles;
     [SerializeField] ParticleSystem successParticles;
     [SerializeField] ParticleSystem deathParticles;
@@ -73,7 +76,7 @@ public class Rocket : MonoBehaviour
         audioComponent.Stop();
         deathParticles.Play();
         audioComponent.PlayOneShot(death);
-        Invoke("LoadFirstScene", 1f);
+        Invoke("LoadFirstScene", levelLoadDelay);
     }
 
     private void StartSuccessSequence()
@@ -82,7 +85,7 @@ public class Rocket : MonoBehaviour
         audioComponent.Stop();
         audioComponent.PlayOneShot(levelStart);
         successParticles.Play();
-        Invoke("LoadNextScene", 1f); //parameterise time
+        Invoke("LoadNextScene", levelLoadDelay); //parameterise time
     }
 
     private void LoadFirstScene()
@@ -117,7 +120,7 @@ public class Rocket : MonoBehaviour
 
     private void ApplyThrust()
     {
-        ridgeBody.AddRelativeForce(Vector3.up * thrusterBoost);
+        ridgeBody.AddRelativeForce(Vector3.up * thrusterBoost*Time.deltaTime);
         if (!audioComponent.isPlaying)
         {
             audioComponent.PlayOneShot(mainEngine);
