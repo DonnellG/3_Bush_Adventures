@@ -537,7 +537,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rcsThrust: 500
-  thrusterBoost: 150
+  thrusterBoost: 10000
+  levelLoadDelay: 2
   mainEngine: {fileID: 8300000, guid: 1c03e995514d96842a3abacf2cae3cd3, type: 3}
   death: {fileID: 8300000, guid: 19624e368c890fc4cac0b1cc9aee5be1, type: 3}
   levelStart: {fileID: 8300000, guid: 9bae6c5539ae5da4c89206c994329352, type: 3}
