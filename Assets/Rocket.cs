@@ -19,7 +19,7 @@ public class Rocket : MonoBehaviour
     AudioSource audioComponent;
     Rigidbody ridgeBody;
 
-    enum State {Alive, Dying, Transcending}
+    enum State {Alive, Dying, Transcending, Godmode}
 
     State state = State.Alive;
 
@@ -34,19 +34,55 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (state == State.Alive)
+        if (state == State.Alive || state == State.Godmode)
         {
             //todo stop show on death
             RespondToThrustInput();
             RespondToRotateInput();
         }
-        
-        ResetRocket();
+        if (Debug.isDebugBuild)
+        {
+            RespondtoDebugKeys();
+            ResetRocket();
+        }
+
+
+    }
+
+    private void RespondtoDebugKeys()
+    {
+        LoadNextLevelKey();
+        EnableGodeMode();
+    }
+
+    private void EnableGodeMode()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            if (state == State.Godmode)
+            {
+                state = State.Alive;
+                print("you are MORTAL");
+            }
+            else
+            {
+                state = State.Godmode;
+                print("you are a GOD");
+            }
+        }
+    }
+
+    private void LoadNextLevelKey()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadNextScene();
+        }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive) {return;}
+        if (state != State.Alive && state != State.Godmode) {return;}
 
         switch (collision.gameObject.tag)
         {
@@ -59,6 +95,7 @@ public class Rocket : MonoBehaviour
                 break;
 
             default:
+                if (state == State.Godmode) { return; }
                 StartDeathSequence();
                 break;
         }
@@ -95,7 +132,14 @@ public class Rocket : MonoBehaviour
 
     private void LoadNextScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
+        {
+            nextSceneIndex = 0;
+        }
+            SceneManager.LoadScene(nextSceneIndex);
     }
 
     private void RespondToThrustInput()
@@ -104,18 +148,18 @@ public class Rocket : MonoBehaviour
         {
             ApplyThrust();
         }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            ridgeBody.AddRelativeForce(-Vector3.up * thrusterBoost);
-            audioComponent.Stop();
-        }
 
         else
         {
-            audioComponent.Stop();
-            mainEngineParticles.Stop();
+            StopApplyingThrust();
         }
 
+    }
+
+    private void StopApplyingThrust()
+    {
+        audioComponent.Stop();
+        mainEngineParticles.Stop();
     }
 
     private void ApplyThrust()
@@ -125,14 +169,14 @@ public class Rocket : MonoBehaviour
         {
             audioComponent.PlayOneShot(mainEngine);
         }
+
         mainEngineParticles.Play();
     }
 
     private void RespondToRotateInput()
     {
-        ridgeBody.freezeRotation = true; // take manual control of rotation
+        ridgeBody.angularVelocity = Vector3.zero;
 
-        
         float rotationThisFrame = rcsThrust * Time.deltaTime;
 
         if (Input.GetKey(KeyCode.A))
@@ -147,7 +191,6 @@ public class Rocket : MonoBehaviour
             print("Rotate Right");
             transform.Rotate(-Vector3.forward * rotationThisFrame);
         }
-        ridgeBody.freezeRotation = false; // remove manual control of rotation
 
     }
 

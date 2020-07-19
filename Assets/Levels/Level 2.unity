@@ -529,6 +529,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2857742616918123675, guid: d9a84a57b4521b743bdf3edd312d98ff,
+        type: 3}
+      propertyPath: BypassReverbZones
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3041056287174334374, guid: d9a84a57b4521b743bdf3edd312d98ff,
         type: 3}
       propertyPath: m_LocalPosition.x
